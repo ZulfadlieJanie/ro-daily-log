@@ -161,6 +161,7 @@
     }
     .btn-cancel:hover { background-color: #5a6268; }
 
+    /* Modal Windows */
     .modal {
       display: none;
       position: fixed;
@@ -169,18 +170,37 @@
       top: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.6);
       align-items: center;
       justify-content: center;
     }
     .modal-content {
       background: white;
-      padding: 25px 30px;
+      padding: 28px 30px;
       border-radius: 8px;
       text-align: center;
-      max-width: 420px;
-      width: 85%;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      animation: modalSlide 0.3s ease;
+    }
+    @keyframes modalSlide {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .notice-icon {
+      width: 60px;
+      height: 60px;
+      background: #fff3cd;
+      color: #856404;
+      border: 2px solid #ffeeba;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: bold;
+      margin: 0 auto 15px auto;
     }
     .tick-icon {
       width: 60px;
@@ -193,6 +213,29 @@
       justify-content: center;
       font-size: 34px;
       margin: 0 auto 15px auto;
+    }
+
+    .notice-box {
+      text-align: left;
+      background-color: #fdfdfe;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #ffc107;
+      padding: 14px 16px;
+      margin: 15px 0 22px 0;
+      border-radius: 4px;
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: #333;
+    }
+    .notice-box ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    .notice-box li {
+      margin-bottom: 8px;
+    }
+    .notice-box li:last-child {
+      margin-bottom: 0;
     }
 
     #message-area {
@@ -225,6 +268,24 @@
 </head>
 <body>
 
+<!-- Startup Notice Popup Modal -->
+<div id="noticeModal" class="modal" style="display: flex;">
+  <div class="modal-content">
+    <div class="notice-icon">!</div>
+    <h3 style="margin-top:0; color:#343a40; border:none; padding:0; font-size: 1.3em;">IMPORTANT CLINICAL NOTICE</h3>
+    <p style="font-size: 13px; color: #6c757d; margin: 4px 0 10px 0;">Standard Operating Protocol &bull; Water Treatment System</p>
+    
+    <div class="notice-box">
+      <ul>
+        <li><b>System Stabilization:</b> Ensure the RO System has been in continuous operation for <b>at least 10 minutes</b> before recording log parameters to guarantee stable, accurate baseline values.</li>
+        <li><b>Brine Tank Replenishment:</b> Refill the brine tank using only <b>high-purity, non-iodized solar salt</b> and water according to manufacturer guidelines to ensure proper scheduled resin regeneration and prevent softener exhaustion.</li>
+      </ul>
+    </div>
+
+    <button type="button" class="btn-submit" style="width: 100%; padding: 12px;" onclick="closeNoticeModal()">Acknowledge & Proceed</button>
+  </div>
+</div>
+
 <div class="container">
   <div class="header">
     <img src="https://lh3.googleusercontent.com/d/1tCDAMimy_b0x9kRmWNyYMn4voR9Ynr0J" alt="Logo">
@@ -237,7 +298,7 @@
     <div class="grid-2">
       <div>
         <label for="staffName"><span class="field-title">Name of Staff</span></label>
-        <input type="text" id="staffName" placeholder="e.g. SN Helona / PPP Glen" required>
+        <input type="text" id="staffName" placeholder="e.g. SN Helona / PPP Glen required>
       </div>
       <div>
         <label for="selectRo"><span class="field-title">Select RO System</span></label>
@@ -309,37 +370,37 @@
       <h3>RO LOGGING LIST (RO 01)</h3>
 
       <div class="item-card">
-        <div class="item-card-header">System Pressure</div>
+        <div class="item-card-header">Subtopic 1: System Pressure</div>
         <div class="grid-3">
-          <div><label><span class="field-title">System In</span><span class="ref-tag" id="ref_r01_b10"></span></label><input type="text" id="r01_sysIn"></div>
-          <div><label><span class="field-title">System Out</span><span class="ref-tag" id="ref_r01_b11"></span></label><input type="text" id="r01_sysOut"></div>
-          <div><label><span class="field-title">Raw Water</span><span class="ref-tag" id="ref_r01_b12"></span></label><input type="text" id="r01_rawWater"></div>
-          <div><label><span class="field-title">Filter</span><span class="ref-tag" id="ref_r01_b13"></span></label><input type="text" id="r01_filter"></div>
-          <div><label><span class="field-title">Carbon 1</span><span class="ref-tag" id="ref_r01_b14"></span></label><input type="text" id="r01_carbon1"></div>
-          <div><label><span class="field-title">Carbon 2</span><span class="ref-tag" id="ref_r01_b15"></span></label><input type="text" id="r01_carbon2"></div>
-          <div><label><span class="field-title">Guard Filter In</span><span class="ref-tag" id="ref_r01_b16"></span></label><input type="text" id="r01_guardIn"></div>
-          <div><label><span class="field-title">Guard Filter Out</span><span class="ref-tag" id="ref_r01_b17"></span></label><input type="text" id="r01_guardOut"></div>
-          <div><label><span class="field-title">Permeate</span><span class="ref-tag" id="ref_r01_b18"></span></label><input type="text" id="r01_permeate"></div>
+          <div><label><span class="field-title" id="lbl_r01_a10">System In</span><span class="ref-tag" id="ref_r01_b10"></span></label><input type="text" id="r01_sysIn"></div>
+          <div><label><span class="field-title" id="lbl_r01_a11">System Out</span><span class="ref-tag" id="ref_r01_b11"></span></label><input type="text" id="r01_sysOut"></div>
+          <div><label><span class="field-title" id="lbl_r01_a12">Raw Water</span><span class="ref-tag" id="ref_r01_b12"></span></label><input type="text" id="r01_rawWater"></div>
+          <div><label><span class="field-title" id="lbl_r01_a13">Filter</span><span class="ref-tag" id="ref_r01_b13"></span></label><input type="text" id="r01_filter"></div>
+          <div><label><span class="field-title" id="lbl_r01_a14">Carbon 1</span><span class="ref-tag" id="ref_r01_b14"></span></label><input type="text" id="r01_carbon1"></div>
+          <div><label><span class="field-title" id="lbl_r01_a15">Carbon 2</span><span class="ref-tag" id="ref_r01_b15"></span></label><input type="text" id="r01_carbon2"></div>
+          <div><label><span class="field-title" id="lbl_r01_a16">Guard Filter In</span><span class="ref-tag" id="ref_r01_b16"></span></label><input type="text" id="r01_guardIn"></div>
+          <div><label><span class="field-title" id="lbl_r01_a17">Guard Filter Out</span><span class="ref-tag" id="ref_r01_b17"></span></label><input type="text" id="r01_guardOut"></div>
+          <div><label><span class="field-title" id="lbl_r01_a18">Permeate</span><span class="ref-tag" id="ref_r01_b18"></span></label><input type="text" id="r01_permeate"></div>
         </div>
       </div>
 
       <div class="item-card">
-        <div class="item-card-header">System Flow</div>
+        <div class="item-card-header">Subtopic 2: System Flow</div>
         <div class="grid-4">
-          <div><label><span class="field-title">Conductivity</span><span class="ref-tag" id="ref_r01_b20"></span></label><input type="text" id="r01_conductivity"></div>
-          <div><label><span class="field-title">Permeate Flow</span><span class="ref-tag" id="ref_r01_b21"></span></label><input type="text" id="r01_permFlow"></div>
-          <div><label><span class="field-title">Reject</span><span class="ref-tag" id="ref_r01_b22"></span></label><input type="text" id="r01_reject"></div>
-          <div><label><span class="field-title">RO Run Hour</span><span class="ref-tag" id="ref_r01_b23"></span></label><input type="text" id="r01_runHour"></div>
+          <div><label><span class="field-title" id="lbl_r01_a20">Conductivity</span><span class="ref-tag" id="ref_r01_b20"></span></label><input type="text" id="r01_conductivity"></div>
+          <div><label><span class="field-title" id="lbl_r01_a21">Permeate Flow</span><span class="ref-tag" id="ref_r01_b21"></span></label><input type="text" id="r01_permFlow"></div>
+          <div><label><span class="field-title" id="lbl_r01_a22">Reject</span><span class="ref-tag" id="ref_r01_b22"></span></label><input type="text" id="r01_reject"></div>
+          <div><label><span class="field-title" id="lbl_r01_a23">RO Run Hour</span><span class="ref-tag" id="ref_r01_b23"></span></label><input type="text" id="r01_runHour"></div>
         </div>
       </div>
 
       <div class="item-card">
-        <div class="item-card-header">System Maintenance</div>
+        <div class="item-card-header">Subtopic 3: System Maintenance</div>
         <div class="grid-3">
-          <div><label><span class="field-title">Hardness</span><span class="ref-tag" id="ref_r01_b25"></span></label><input type="text" id="r01_hardness" placeholder="0"></div>
-          <div><label><span class="field-title">Chlorine</span><span class="ref-tag" id="ref_r01_b26"></span></label><input type="text" id="r01_chlorine" placeholder="0"></div>
+          <div><label><span class="field-title" id="lbl_r01_a25">Hardness</span><span class="ref-tag" id="ref_r01_b25"></span></label><input type="text" id="r01_hardness" placeholder="0"></div>
+          <div><label><span class="field-title" id="lbl_r01_a26">Chlorine</span><span class="ref-tag" id="ref_r01_b26"></span></label><input type="text" id="r01_chlorine" placeholder="0"></div>
           <div>
-            <label><span class="field-title">Brine Tank</span></label>
+            <label><span class="field-title" id="lbl_r01_a27">Brine Tank</span></label>
             <select id="r01_brineTank">
               <option value="Done">Done</option>
               <option value="Not Done">Not Done</option>
@@ -354,37 +415,40 @@
       <h3>RO LOGGING LIST (RO 02)</h3>
 
       <div class="item-card">
-        <div class="item-card-header">Water Purification System</div>
+        <div class="item-card-header">Subtopic 1: Water Purification System</div>
         <div class="grid-4">
-          <div><label><span class="field-title">Raw Water</span><span class="ref-tag" id="ref_r02_b10"></span></label><input type="text" id="r02_rawWater"></div>
-          <div><label><span class="field-title">Sediment</span><span class="ref-tag" id="ref_r02_b11"></span></label><input type="text" id="r02_sediment"></div>
-          <div><label><span class="field-title">Carbon 1</span><span class="ref-tag" id="ref_r02_b12"></span></label><input type="text" id="r02_carbon1"></div>
-          <div><label><span class="field-title">Carbon 2</span><span class="ref-tag" id="ref_r02_b13"></span></label><input type="text" id="r02_carbon2"></div>
-          <div><label><span class="field-title">Carbon 3</span><span class="ref-tag" id="ref_r02_b14"></span></label><input type="text" id="r02_carbon3"></div>
-          <div><label><span class="field-title">Guard In</span><span class="ref-tag" id="ref_r02_b15"></span></label><input type="text" id="r02_guardIn"></div>
-          <div><label><span class="field-title">Guard Out</span><span class="ref-tag" id="ref_r02_b16"></span></label><input type="text" id="r02_guardOut"></div>
-          <div><label><span class="field-title">System In</span><span class="ref-tag" id="ref_r02_b17"></span></label><input type="text" id="r02_sysIn"></div>
-          <div><label><span class="field-title">System Out</span><span class="ref-tag" id="ref_r02_b18"></span></label><input type="text" id="r02_sysOut"></div>
-          <div><label><span class="field-title">Permeate</span><span class="ref-tag" id="ref_r02_b19"></span></label><input type="text" id="r02_permeate"></div>
-          <div><label><span class="field-title">Permeate Flow</span><span class="ref-tag" id="ref_r02_b20"></span></label><input type="text" id="r02_permFlow"></div>
-          <div><label><span class="field-title">Reject Flow</span><span class="ref-tag" id="ref_r02_b21"></span></label><input type="text" id="r02_rejectFlow"></div>
-          <div><label><span class="field-title">Raw Conduct.</span><span class="ref-tag" id="ref_r02_b22"></span></label><input type="text" id="r02_rawCond"></div>
-          <div><label><span class="field-title">Perm Conduct.</span><span class="ref-tag" id="ref_r02_b23"></span></label><input type="text" id="r02_permCond"></div>
-          <div><label><span class="field-title">Rejection Rate</span><span class="ref-tag" id="ref_r02_b24"></span></label><input type="text" id="r02_rejectRate"></div>
-          <div><label><span class="field-title">RO Run Hour</span><span class="ref-tag" id="ref_r02_b25"></span></label><input type="text" id="r02_runHour"></div>
+          <div><label><span class="field-title" id="lbl_r02_a10">Raw Water</span><span class="ref-tag" id="ref_r02_b10"></span></label><input type="text" id="r02_rawWater"></div>
+          <div><label><span class="field-title" id="lbl_r02_a11">Sediment</span><span class="ref-tag" id="ref_r02_b11"></span></label><input type="text" id="r02_sediment"></div>
+          <div><label><span class="field-title" id="lbl_r02_a12">Carbon 1</span><span class="ref-tag" id="ref_r02_b12"></span></label><input type="text" id="r02_carbon1"></div>
+          <div><label><span class="field-title" id="lbl_r02_a13">Carbon 2</span><span class="ref-tag" id="ref_r02_b13"></span></label><input type="text" id="r02_carbon2"></div>
+          <div><label><span class="field-title" id="lbl_r02_a14">Carbon 3</span><span class="ref-tag" id="ref_r02_b14"></span></label><input type="text" id="r02_carbon3"></div>
+          <div><label><span class="field-title" id="lbl_r02_a15">Guard Filter In</span><span class="ref-tag" id="ref_r02_b15"></span></label><input type="text" id="r02_guardIn"></div>
+          <div><label><span class="field-title" id="lbl_r02_a16">Guard Filter Out</span><span class="ref-tag" id="ref_r02_b16"></span></label><input type="text" id="r02_guardOut"></div>
+          <div><label><span class="field-title" id="lbl_r02_a17">System In</span><span class="ref-tag" id="ref_r02_b17"></span></label><input type="text" id="r02_sysIn"></div>
+          <div><label><span class="field-title" id="lbl_r02_a18">System Out</span><span class="ref-tag" id="ref_r02_b18"></span></label><input type="text" id="r02_sysOut"></div>
+          <div><label><span class="field-title" id="lbl_r02_a19">Permeate</span><span class="ref-tag" id="ref_r02_b19"></span></label><input type="text" id="r02_permeate"></div>
+          <div><label><span class="field-title" id="lbl_r02_a20">Permeate Flow</span><span class="ref-tag" id="ref_r02_b20"></span></label><input type="text" id="r02_permFlow"></div>
+          <div><label><span class="field-title" id="lbl_r02_a21">Reject Flow</span><span class="ref-tag" id="ref_r02_b21"></span></label><input type="text" id="r02_rejectFlow"></div>
+          <div><label><span class="field-title" id="lbl_r02_a22">Raw Conduct.</span><span class="ref-tag" id="ref_r02_b22"></span></label><input type="text" id="r02_rawCond"></div>
+          <div><label><span class="field-title" id="lbl_r02_a23">Perm Conduct.</span><span class="ref-tag" id="ref_r02_b23"></span></label><input type="text" id="r02_permCond"></div>
+          <div><label><span class="field-title" id="lbl_r02_a24">Rejection Rate</span><span class="ref-tag" id="ref_r02_b24"></span></label><input type="text" id="r02_rejectRate"></div>
+          <div><label><span class="field-title" id="lbl_r02_a25">RO Run Hour</span><span class="ref-tag" id="ref_r02_b25"></span></label><input type="text" id="r02_runHour"></div>
         </div>
       </div>
 
       <div class="item-card">
-        <div class="item-card-header">System Maintenance</div>
+        <div class="item-card-header">Subtopic 2: System Maintenance</div>
         <div class="grid-3">
-          <div><label><span class="field-title">Carbon Filter 1</span><span class="ref-tag" id="ref_r02_b28"></span></label><input type="text" id="r02_carbonF1"></div>
-          <div><label><span class="field-title">Carbon Filter 2</span><span class="ref-tag" id="ref_r02_b29"></span></label><input type="text" id="r02_carbonF2"></div>
-          <div><label><span class="field-title">Carbon Filter 3</span><span class="ref-tag" id="ref_r02_b30"></span></label><input type="text" id="r02_carbonF3" placeholder="Optional"></div>
-          <div><label><span class="field-title">Softener Filter 1</span><span class="ref-tag" id="ref_r02_b32"></span></label><input type="text" id="r02_softener1"></div>
-          <div><label><span class="field-title">Softener Filter 2</span><span class="ref-tag" id="ref_r02_b33"></span></label><input type="text" id="r02_softener2" placeholder="Optional"></div>
+          <!-- Carbon Filter 1 is Mandatory -->
+          <div><label><span class="field-title" id="lbl_r02_a28">Carbon Filter 1</span><span class="ref-tag" id="ref_r02_b28"></span></label><input type="text" id="r02_carbonF1"></div>
+          <!-- Carbon Filter 2 & 3 are Optional -->
+          <div><label><span class="field-title" id="lbl_r02_a29">Carbon Filter 2 (Optional)</span><span class="ref-tag" id="ref_r02_b29"></span></label><input type="text" id="r02_carbonF2" placeholder="Optional"></div>
+          <div><label><span class="field-title" id="lbl_r02_a30">Carbon Filter 3 (Optional)</span><span class="ref-tag" id="ref_r02_b30"></span></label><input type="text" id="r02_carbonF3" placeholder="Optional"></div>
+          
+          <div><label><span class="field-title" id="lbl_r02_a32">Softener Filter 1</span><span class="ref-tag" id="ref_r02_b32"></span></label><input type="text" id="r02_softener1"></div>
+          <div><label><span class="field-title" id="lbl_r02_a33">Softener Filter 2 (Optional)</span><span class="ref-tag" id="ref_r02_b33"></span></label><input type="text" id="r02_softener2" placeholder="Optional"></div>
           <div>
-            <label><span class="field-title">Brine Tank</span></label>
+            <label><span class="field-title" id="lbl_r02_a34">Brine Tank</span></label>
             <select id="r02_brineTank">
               <option value="Done">Done</option>
               <option value="Not Done">Not Done</option>
@@ -399,9 +463,9 @@
       <h3>RO TANK LOGGING LIST</h3>
       <div class="item-card">
         <div class="grid-3">
-          <div><label><span class="field-title">Pre Filter</span><span class="ref-tag" id="ref_rot_b36"></span></label><input type="text" id="rot_preFilter"></div>
-          <div><label><span class="field-title">Post Filter</span><span class="ref-tag" id="ref_rot_b37"></span></label><input type="text" id="rot_postFilter"></div>
-          <div><label><span class="field-title">Return</span><span class="ref-tag" id="ref_rot_b38"></span></label><input type="text" id="rot_return"></div>
+          <div><label><span class="field-title" id="lbl_rot_a36">Pre Filter</span><span class="ref-tag" id="ref_rot_b36"></span></label><input type="text" id="rot_preFilter"></div>
+          <div><label><span class="field-title" id="lbl_rot_a37">Post Filter</span><span class="ref-tag" id="ref_rot_b37"></span></label><input type="text" id="rot_postFilter"></div>
+          <div><label><span class="field-title" id="lbl_rot_a38">Return</span><span class="ref-tag" id="ref_rot_b38"></span></label><input type="text" id="rot_return"></div>
         </div>
       </div>
 
@@ -420,7 +484,7 @@
   </div>
 </div>
 
-<!-- Modal -->
+<!-- Submission Success Modal -->
 <div id="successModal" class="modal">
   <div class="modal-content">
     <div class="tick-icon">✓</div>
@@ -433,6 +497,10 @@
 <script>
   const SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbwHkqSKWrF_xt3xDc6XRk3F-8opD4WBvfGglxjLwHcKJqohGEyUcEzU6lNcVnkdTq2Ckw/exec";
 
+  function closeNoticeModal() {
+    document.getElementById('noticeModal').style.display = "none";
+  }
+
   function handleRoSelect(val) {
     document.getElementById('assetSection').style.display = "none";
     document.getElementById('secRO01').style.display = "none";
@@ -444,7 +512,7 @@
       return;
     }
 
-    showMessage("Loading Asset details and reference values...", "normal");
+    showMessage("Loading Asset details, descriptions, and dynamic reference values...", "normal");
     fetch(SCRIPT_API_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -470,11 +538,36 @@
 
         document.getElementById('assetSection').style.display = "block";
 
-        // 2. Streamlined reference format: (val) instead of (Ref: val)
+        const descs = res.descriptions || {};
         const refs = res.references || {};
         const formatRef = (val) => val ? `(${val})` : "";
+        const setLabel = (elemId, defaultText, key) => {
+          const el = document.getElementById(elemId);
+          if (el) el.textContent = descs[key] || defaultText;
+        };
 
         if (val === "RO 01") {
+          // Dynamic Descriptions (Col A)
+          setLabel('lbl_r01_a10', 'System In', 'A10');
+          setLabel('lbl_r01_a11', 'System Out', 'A11');
+          setLabel('lbl_r01_a12', 'Raw Water', 'A12');
+          setLabel('lbl_r01_a13', 'Filter', 'A13');
+          setLabel('lbl_r01_a14', 'Carbon 1', 'A14');
+          setLabel('lbl_r01_a15', 'Carbon 2', 'A15');
+          setLabel('lbl_r01_a16', 'Guard Filter In', 'A16');
+          setLabel('lbl_r01_a17', 'Guard Filter Out', 'A17');
+          setLabel('lbl_r01_a18', 'Permeate', 'A18');
+
+          setLabel('lbl_r01_a20', 'Conductivity', 'A20');
+          setLabel('lbl_r01_a21', 'Permeate Flow', 'A21');
+          setLabel('lbl_r01_a22', 'Reject', 'A22');
+          setLabel('lbl_r01_a23', 'RO Run Hour', 'A23');
+
+          setLabel('lbl_r01_a25', 'Hardness', 'A25');
+          setLabel('lbl_r01_a26', 'Chlorine', 'A26');
+          setLabel('lbl_r01_a27', 'Brine Tank', 'A27');
+
+          // Dynamic References (Col B)
           document.getElementById('ref_r01_b10').textContent = formatRef(refs["B10"]);
           document.getElementById('ref_r01_b11').textContent = formatRef(refs["B11"]);
           document.getElementById('ref_r01_b12').textContent = formatRef(refs["B12"]);
@@ -498,6 +591,39 @@
           toggleRequired('secRO01', true);
           toggleRequired('secRO02', false);
         } else {
+          // Dynamic Descriptions (Col A)
+          setLabel('lbl_r02_a10', 'Raw Water', 'A10');
+          setLabel('lbl_r02_a11', 'Sediment', 'A11');
+          setLabel('lbl_r02_a12', 'Carbon 1', 'A12');
+          setLabel('lbl_r02_a13', 'Carbon 2', 'A13');
+          setLabel('lbl_r02_a14', 'Carbon 3', 'A14');
+          setLabel('lbl_r02_a15', 'Guard In', 'A15');
+          setLabel('lbl_r02_a16', 'Guard Out', 'A16');
+          setLabel('lbl_r02_a17', 'System In', 'A17');
+          setLabel('lbl_r02_a18', 'System Out', 'A18');
+          setLabel('lbl_r02_a19', 'Permeate', 'A19');
+          setLabel('lbl_r02_a20', 'Permeate Flow', 'A20');
+          setLabel('lbl_r02_a21', 'Reject Flow', 'A21');
+          setLabel('lbl_r02_a22', 'Raw Conduct.', 'A22');
+          setLabel('lbl_r02_a23', 'Perm Conduct.', 'A23');
+          setLabel('lbl_r02_a24', 'Rejection Rate', 'A24');
+          setLabel('lbl_r02_a25', 'RO Run Hour', 'A25');
+
+          // Subtopic 2 labels with clean optional indicators
+          const c1Text = descs["A28"] || 'Carbon Filter 1';
+          const c2Text = (descs["A29"] || 'Carbon Filter 2') + ' (Optional)';
+          const c3Text = (descs["A30"] || 'Carbon Filter 3') + ' (Optional)';
+          const s1Text = descs["A32"] || 'Softener Filter 1';
+          const s2Text = (descs["A33"] || 'Softener Filter 2') + ' (Optional)';
+
+          document.getElementById('lbl_r02_a28').textContent = c1Text;
+          document.getElementById('lbl_r02_a29').textContent = c2Text;
+          document.getElementById('lbl_r02_a30').textContent = c3Text;
+          document.getElementById('lbl_r02_a32').textContent = s1Text;
+          document.getElementById('lbl_r02_a33').textContent = s2Text;
+          setLabel('lbl_r02_a34', 'Brine Tank', 'A34');
+
+          // Dynamic References (Col B)
           document.getElementById('ref_r02_b10').textContent = formatRef(refs["B10"]);
           document.getElementById('ref_r02_b11').textContent = formatRef(refs["B11"]);
           document.getElementById('ref_r02_b12').textContent = formatRef(refs["B12"]);
@@ -517,9 +643,9 @@
 
           document.getElementById('ref_r02_b28').textContent = formatRef(refs["B28"]);
           document.getElementById('ref_r02_b29').textContent = formatRef(refs["B29"]);
-          document.getElementById('ref_r02_b30').textContent = refs["B30"] ? `(${refs["B30"]})` : "(Optional)";
+          document.getElementById('ref_r02_b30').textContent = formatRef(refs["B30"]);
           document.getElementById('ref_r02_b32').textContent = formatRef(refs["B32"]);
-          document.getElementById('ref_r02_b33').textContent = refs["B33"] ? `(${refs["B33"]})` : "(Optional)";
+          document.getElementById('ref_r02_b33').textContent = formatRef(refs["B33"]);
 
           document.getElementById('secRO01').style.display = "none";
           document.getElementById('secRO02').style.display = "block";
@@ -527,7 +653,11 @@
           toggleRequired('secRO02', true);
         }
 
-        // 3. Tank Dynamic References (Rows 36, 37, 38)
+        // 3. Tank Dynamic Descriptions & References (Rows 36, 37, 38)
+        setLabel('lbl_rot_a36', 'Pre Filter', 'A36');
+        setLabel('lbl_rot_a37', 'Post Filter', 'A37');
+        setLabel('lbl_rot_a38', 'Return', 'A38');
+
         document.getElementById('ref_rot_b36').textContent = formatRef(refs["B36"]);
         document.getElementById('ref_rot_b37').textContent = formatRef(refs["B37"]);
         document.getElementById('ref_rot_b38').textContent = formatRef(refs["B38"]);
@@ -544,10 +674,19 @@
   function toggleRequired(containerId, isReq) {
     const c = document.getElementById(containerId);
     c.querySelectorAll('input, select').forEach(el => {
-      const isOpt = (el.placeholder && el.placeholder.includes("Optional")) || (el.id === "r02_carbonF3" || el.id === "r02_softener2");
-      if (!isOpt) {
+      // Carbon 2, Carbon 3, and Softener 2 are strictly optional
+      const isOptionalField = (
+        el.id === "r02_carbonF2" || 
+        el.id === "r02_carbonF3" || 
+        el.id === "r02_softener2" ||
+        (el.placeholder && el.placeholder.includes("Optional"))
+      );
+
+      if (!isOptionalField) {
         if (isReq) el.setAttribute('required', 'true');
         else el.removeAttribute('required');
+      } else {
+        el.removeAttribute('required'); // Always optional
       }
     });
   }
